@@ -2,3 +2,5 @@
 kube_config.toml
 kube_config.yaml
 pi-production-kubeconfig.yaml
+supabase.toml
+supabase.yaml

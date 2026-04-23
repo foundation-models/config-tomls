@@ -8,6 +8,7 @@ Team TOML-style configs, stored **encrypted** in git (SOPS + age).
 |------|---------|
 | `config/enc/*.enc.yaml` | SOPS-encrypted files (safe to commit). |
 | `config/enc/pi-production-kubeconfig.enc.yaml` | Encrypted DOKS admin kubeconfig (`pi-production`). |
+| `config/enc/supabase.enc.yaml` | Encrypted `~/.config/supabase.toml` (dev/production DB settings). |
 | `.sops.yaml` | SOPS rules (age **public** recipient only). |
 
 Plaintext originals (for example `~/.config/kube_config.toml`) stay on your machine and are listed in `config/enc/.gitignore` if copied beside ciphertext.
@@ -19,7 +20,7 @@ Requires the age **private** key (same material as GitHub secret `SOPS_AGE_KEY`)
 ```bash
 export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"   # or SOPS_AGE_KEY with inline key
 make check-sops-key   # optional: confirms your key matches .sops.yaml (needs: brew install age)
-make decrypt-config   # writes ~/.config/kube_config.yaml, pi-production-kubeconfig.yaml, …
+make decrypt-config   # writes ~/.config/kube_config.toml, supabase.toml (YAML→TOML), pi-production-kubeconfig.yaml; removes stale kube_config.yaml
 ```
 
 ## Re-encrypt from `~/.config` (after rotating age key)
@@ -31,7 +32,7 @@ make decrypt-config   # writes ~/.config/kube_config.yaml, pi-production-kubecon
 |------------------------|-------------------------------------|
 | `config/enc/<stem>.enc.yaml` | `~/.config/<stem>.toml` **or** `~/.config/<stem>.yaml` |
 
-Examples: `kube_config.enc.yaml` ← `kube_config.toml` or `kube_config.yaml`; `pi-production-kubeconfig.enc.yaml` ← `pi-production-kubeconfig.toml` or `.yaml`.
+Examples: `kube_config.enc.yaml` ← `kube_config.toml` or `kube_config.yaml`; `supabase.enc.yaml` ← `supabase.toml`; `pi-production-kubeconfig.enc.yaml` ← `pi-production-kubeconfig.toml` or `.yaml`.
 
 3. Run:
 
