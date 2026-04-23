@@ -1,0 +1,6 @@
+# SOPS: encrypt/decrypt files under config/enc/*.enc.yaml with the repo age key.
+# CI: set SOPS_AGE_KEY to the private identity (GitHub secret SOPS_AGE_KEY).
+# Source of truth for structure is ~/.config/kube_config.toml (converted to YAML for SOPS).
+creation_rules:
+  - path_regex: config/enc/.*\.enc\.yaml$
+    age: age14a25mmmgcpdh9l2dg35325pjq024925zrzt5xhjs3a3n5p5u5pmsttuh45
