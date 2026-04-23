@@ -18,7 +18,8 @@ Requires the age **private** key (same material as GitHub secret `SOPS_AGE_KEY`)
 
 ```bash
 export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"   # or SOPS_AGE_KEY with inline key
-sops -d config/enc/kube_config.enc.yaml
+make check-sops-key   # optional: confirms your key matches .sops.yaml (needs: brew install age)
+make decrypt-config   # writes ~/.config/kube_config.yaml, pi-production-kubeconfig.yaml, …
 ```
 
 To restore the pi-production kubeconfig to a local file (then `chmod 600` it):
