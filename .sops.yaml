@@ -3,4 +3,4 @@
 # Source of truth for structure is ~/.config/kube_config.toml (converted to YAML for SOPS).
 creation_rules:
   - path_regex: config/enc/.*\.enc\.yaml$
-    age: age14a25mmmgcpdh9l2dg35325pjq024925zrzt5xhjs3a3n5p5u5pmsttuh45
+    age: age1c7axzza9g9dd9q77xrdyk8x3uxfml30p6nnkfpmc08742fpwmspstt7w89

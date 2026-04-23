@@ -22,6 +22,25 @@ make check-sops-key   # optional: confirms your key matches .sops.yaml (needs: b
 make decrypt-config   # writes ~/.config/kube_config.yaml, pi-production-kubeconfig.yaml, …
 ```
 
+## Re-encrypt from `~/.config` (after rotating age key)
+
+1. Put the new **public** `age1…` line in **`.sops.yaml`** (and update GitHub **`SOPS_AGE_KEY`** with the matching private key).
+2. From the **repo root**, with plaintext under `~/.config/`:
+
+| Encrypted file in repo | Plaintext source (first match wins) |
+|------------------------|-------------------------------------|
+| `config/enc/<stem>.enc.yaml` | `~/.config/<stem>.toml` **or** `~/.config/<stem>.yaml` |
+
+Examples: `kube_config.enc.yaml` ← `kube_config.toml` or `kube_config.yaml`; `pi-production-kubeconfig.enc.yaml` ← `pi-production-kubeconfig.toml` or `.yaml`.
+
+3. Run:
+
+```bash
+make encrypt-config-from-home   # needs: sops, uv + PyYAML if any source is .toml
+```
+
+The Makefile passes **`--filename-override`** to `sops encrypt` so **`.sops.yaml`** `path_regex` matches the repo path (`config/enc/*.enc.yaml`) even when the plaintext comes from `/tmp` (TOML→YAML) or from `~/.config` outside the repo. Then commit and push the updated `*.enc.yaml` files.
+
 To restore the pi-production kubeconfig to a local file (then `chmod 600` it):
 
 `sops -d config/enc/pi-production-kubeconfig.enc.yaml > ~/.config/pi-production-kubeconfig.yaml`
