@@ -1,3 +1,4 @@
 # Do not commit decrypted/plain copies beside encrypted artifacts
 kube_config.toml
 kube_config.yaml
+pi-production-kubeconfig.yaml

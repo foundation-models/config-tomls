@@ -7,6 +7,7 @@ Team TOML-style configs, stored **encrypted** in git (SOPS + age).
 | Path | Purpose |
 |------|---------|
 | `config/enc/*.enc.yaml` | SOPS-encrypted files (safe to commit). |
+| `config/enc/pi-production-kubeconfig.enc.yaml` | Encrypted DOKS admin kubeconfig (`pi-production`). |
 | `.sops.yaml` | SOPS rules (age **public** recipient only). |
 
 Plaintext originals (for example `~/.config/kube_config.toml`) stay on your machine and are listed in `config/enc/.gitignore` if copied beside ciphertext.
@@ -19,6 +20,10 @@ Requires the age **private** key (same material as GitHub secret `SOPS_AGE_KEY`)
 export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"   # or SOPS_AGE_KEY with inline key
 sops -d config/enc/kube_config.enc.yaml
 ```
+
+To restore the pi-production kubeconfig to a local file (then `chmod 600` it):
+
+`sops -d config/enc/pi-production-kubeconfig.enc.yaml > ~/.config/pi-production-kubeconfig.yaml`
 
 Edit in place:
 
