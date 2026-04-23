@@ -1,0 +1,53 @@
+# Decrypts repo-encrypted kubeconfig (SOPS + age) and verifies cluster access.
+# Requires repository secret: SOPS_AGE_KEY (age private key matching .sops.yaml recipient).
+name: pi-production k8s smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pi-production-k8s-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  list-namespaces:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install sops and kubectl
+        env:
+          SOPS_VERSION: "3.12.2"
+          KUBECTL_VERSION: "1.32.2"
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+          sudo install -m0755 /tmp/sops /usr/local/bin/sops
+          curl -fsSL -o /tmp/kubectl "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          sudo install -m0755 /tmp/kubectl /usr/local/bin/kubectl
+          sops --version
+          kubectl version --client=true --output=yaml
+
+      - name: Decrypt kubeconfig
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SOPS_AGE_KEY:-}" ]; then
+            echo "::error::Secret SOPS_AGE_KEY is not set (add age private key in repo Settings → Secrets)."
+            exit 1
+          fi
+          sops -d config/enc/pi-production-kubeconfig.enc.yaml > "${{ runner.temp }}/kubeconfig.yaml"
+          chmod 600 "${{ runner.temp }}/kubeconfig.yaml"
+
+      - name: kubectl get namespaces
+        env:
+          KUBECONFIG: ${{ runner.temp }}/kubeconfig.yaml
+        run: |
+          set -euo pipefail
+          kubectl config current-context
+          kubectl get namespaces

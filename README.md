@@ -37,4 +37,6 @@ SOPS operates on this file as **YAML** (structured encryption). To match `~/.con
 
 ## CI
 
-Provide `SOPS_AGE_KEY` as a repository secret so workflows can decrypt or re-encrypt as needed.
+Provide `SOPS_AGE_KEY` as a repository secret (the **age private** key that matches `.sops.yaml`).
+
+Workflow **pi-production k8s smoke** (`.github/workflows/pi-production-k8s-smoke.yml`): `workflow_dispatch` → decrypts `config/enc/pi-production-kubeconfig.enc.yaml` → `kubectl get namespaces`. Requires `SOPS_AGE_KEY` and outbound access from GitHub runners to the DOKS API.
