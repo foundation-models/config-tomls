@@ -4,7 +4,7 @@ CONFIG_ENC_DIR := config/enc
 CONFIG_ENC_GLOB := $(CONFIG_ENC_DIR)/*.enc.yaml
 HOME_CONFIG := $(HOME)/.config
 # Stems whose decrypted SOPS YAML is written as ~/.config/<stem>.toml (round-trip with encrypt-config-from-home).
-DECRYPT_AS_TOML_STEMS := kube_config supabase
+DECRYPT_AS_TOML_STEMS := kube_config supabase auth0-login
 # Public age recipient from .sops.yaml (single source of truth for encrypt + check).
 SOPS_AGE_RECIPIENT := $(shell sed -n 's/^[[:space:]]*age:[[:space:]]*\(age1[a-z0-9]*\).*/\1/p' .sops.yaml | head -1)
 

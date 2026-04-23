@@ -4,3 +4,5 @@ kube_config.yaml
 pi-production-kubeconfig.yaml
 supabase.toml
 supabase.yaml
+auth0-login.toml
+auth0-login.yaml
